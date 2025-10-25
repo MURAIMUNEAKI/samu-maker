@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>サムネ用アニメ画像メーカー</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script type="importmap">
+  {
+    "imports": {
+      "@google/genai": "https://aistudiocdn.com/@google/genai@^1.27.0"
+    }
+  }
+  </script>
+</head>
+<body class="bg-gray-900 text-white">
+  <!-- Main container -->
+  <div class="min-h-screen p-4 sm:p-8 flex flex-col items-center">
+    <!-- Header -->
+    <header class="w-full max-w-6xl text-center mb-8">
+      <h1 class="text-4xl sm:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">
+        サムネ用アニメ画像メーカー
+      </h1>
+      <p class="text-gray-400 mt-2">AIがあなたのためのアニメ風サムネイルを生成します</p>
+    </header>
+
+    <!-- Main content grid -->
+    <main class="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <!-- Left Side: Controls -->
+      <div class="bg-gray-800 p-6 rounded-lg shadow-lg flex flex-col space-y-6">
+        <div>
+          <label for="title-input" class="block text-lg font-medium text-gray-300 mb-2">
+            タイトル
+          </label>
+          <input
+            id="title-input"
+            type="text"
+            placeholder="例: 最高の冒険が始まる！"
+            class="w-full p-3 bg-gray-700 border border-gray-600 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition"
+          />
+        </div>
+        <div>
+          <label for="style-select" class="block text-lg font-medium text-gray-300 mb-2">
+            画像のスタイル
+          </label>
+          <select
+            id="style-select"
+            class="w-full p-3 bg-gray-700 border border-gray-600 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition"
+          >
+            <option value="可愛い">可愛い</option>
+            <option value="カッコいい">カッコいい</option>
+            <option value="リアル">リアル</option>
+            <option value="パンク">パンク</option>
+          </select>
+        </div>
+        <button
+          id="generate-button"
+          class="w-full p-4 text-lg font-bold bg-gradient-to-r from-purple-500 to-pink-500 rounded-md hover:from-purple-600 hover:to-pink-600 transition-transform transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:scale-100"
+        >
+          画像を生成
+        </button>
+      </div>
+
+      <!-- Right Side: Image Output -->
+      <div class="bg-gray-800 p-6 rounded-lg shadow-lg flex flex-col items-center justify-center space-y-4">
+        <div id="image-container" class="w-full aspect-video bg-gray-700/50 rounded-md flex items-center justify-center border-2 border-dashed border-gray-600 overflow-hidden">
+           <!-- Content is managed by JS -->
+        </div>
+        <button
+          id="download-button"
+          disabled
+          class="w-full p-4 text-lg font-bold bg-green-600 rounded-md hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          ダウンロード
+        </button>
+      </div>
+    </main>
+  </div>
+
+  <script type="module" src="/index.js"></script>
+</body>
+</html>
