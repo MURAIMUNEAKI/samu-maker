@@ -12,7 +12,7 @@ let currentImageUrl = null;
 let isLoading = false;
 
 // --- HTML Snippets ---
-const placeholderHTML = `<p class="text-gray-500">ここに画像が出力されます</p>`;
+const placeholderHTML = `<p class="text-gray-400">ここに画像が出力されます</p>`;
 const spinnerHTML = `
   <div class="text-center">
     <div class="border-4 border-gray-500 border-t-purple-500 rounded-full w-12 h-12 animate-spin mx-auto"></div>
