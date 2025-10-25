@@ -12,7 +12,7 @@ let currentImageUrl = null;
 let isLoading = false;
 
 // --- HTML Snippets ---
-const placeholderHTML = `<p class="text-gray-400">ここに画像が出力されます</p>`;
+const placeholderHTML = `<p class="text-gray-300">ここに画像が出力されます</p>`;
 const spinnerHTML = `
   <div class="text-center">
     <div class="border-4 border-gray-500 border-t-purple-500 rounded-full w-12 h-12 animate-spin mx-auto"></div>
@@ -20,17 +20,9 @@ const spinnerHTML = `
   </div>`;
 
 // --- Gemini API Setup ---
+// この値はデプロイ時にCI/CDプロセスによって実際のAPIキーに置換されます。
+const API_KEY = "%API_KEY%"; 
 let ai;
-if (process.env.API_KEY) {
-  ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-}
-
-const styleToPromptMap = {
-  '可愛い': 'Extremely cute and adorable anime style, kawaii, moe, soft colors, sparkling eyes, for a heartwarming story.',
-  'カッコいい': 'Dynamic and cool anime style, sharp lines, action-packed scene, intense lighting, stylish character design, for an action or fantasy story.',
-  'リアル': 'Highly detailed and realistic anime style, cinematic lighting, photorealistic textures, mature character designs, for a serious drama or sci-fi story.',
-  'パンク': 'Cyberpunk or punk rock anime style, neon lights, gritty urban environment, rebellious attitude, futuristic gadgets, for a dystopian or sci-fi story.',
-};
 
 // --- Functions ---
 
@@ -76,12 +68,19 @@ async function handleGenerate() {
   }
   
   if (!ai) {
-    showError("API_KEYが設定されていません。");
+    showError("APIクライアントが初期化されていません。APIキーが正しく設定されているか確認してください。");
     return;
   }
 
   setUIState(true);
   currentImageUrl = null;
+
+  const styleToPromptMap = {
+    '可愛い': 'Extremely cute and adorable anime style, kawaii, moe, soft colors, sparkling eyes, for a heartwarming story.',
+    'カッコいい': 'Dynamic and cool anime style, sharp lines, action-packed scene, intense lighting, stylish character design, for an action or fantasy story.',
+    'リアル': 'Highly detailed and realistic anime style, cinematic lighting, photorealistic textures, mature character designs, for a serious drama or sci-fi story.',
+    'パンク': 'Cyberpunk or punk rock anime style, neon lights, gritty urban environment, rebellious attitude, futuristic gadgets, for a dystopian or sci-fi story.',
+  };
 
   const styleDescription = styleToPromptMap[style];
   const prompt = `Create a high-quality, professional anime-style image suitable for a video thumbnail. The theme is "${title}". The specific art style should be: ${styleDescription}. The image must be visually striking, with vibrant colors and a clean composition. It should not contain any text.`;
@@ -135,6 +134,26 @@ titleInput.addEventListener('input', () => {
 
 // --- Initial State ---
 function initialize() {
+    if (API_KEY === "%API_KEY%" || !API_KEY) {
+        console.error("APIキーが設定されていません。");
+        showError("APIキーが設定されていません。アプリケーションが正しくデプロイされているか確認してください。");
+        generateButton.disabled = true;
+        titleInput.disabled = true;
+        styleSelect.disabled = true;
+        return;
+    }
+
+    try {
+      ai = new GoogleGenAI({ apiKey: API_KEY });
+    } catch (error) {
+        console.error("GoogleGenAIの初期化に失敗しました:", error);
+        showError("APIクライアントの初期化に失敗しました。キーが正しいか確認してください。");
+        generateButton.disabled = true;
+        titleInput.disabled = true;
+        styleSelect.disabled = true;
+        return;
+    }
+
     imageContainer.innerHTML = placeholderHTML;
     generateButton.disabled = true;
 }
